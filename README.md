@@ -1,5 +1,5 @@
 ##Author: Victor Vu Tran
-#Email: vuanhtran95@gmail.com
+##Email: vuanhtran95@gmail.com
 
 Writing scala script to build compliler
 
