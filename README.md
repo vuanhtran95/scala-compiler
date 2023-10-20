@@ -1,8 +1,9 @@
-## Author: Victor Vu Tran
+Author: Victor Vu Tran
+Email: vuanhtran95@gmail.com
 
-## Email: vuanhtran95@gmail.com
+Writing scala script to build compliler
 
-## This using Ammonite REPL v3
-
-## https://ammonite.io
-# scala-compiler
+**Tech-stack
+**
+https://ammonite.io
+https://scala-lang.org/
