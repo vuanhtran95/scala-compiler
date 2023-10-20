@@ -24,14 +24,37 @@ def simp(r: Base.Rexp) : Base.Rexp = r match {
 * Derivative character c of regexp r
 */
 def der(c: Char, r: Base.Rexp) : Base.Rexp = r match {
+  /**
+  * der c 0 = 0
+  */
   case BasicRegularExpression.ZERO => BasicRegularExpression.ZERO
+
+  /**
+  * der c 1 = 0
+  */
   case BasicRegularExpression.ONE => BasicRegularExpression.ZERO
+
+  /**
+  * der c d = if (c == d) ? 1 : 0
+  */
   case BasicRegularExpression.CHAR(d) => if (c == d) BasicRegularExpression.ONE else BasicRegularExpression.ZERO
+
+  /**
+  * der c (r1 + r2) = (der c r1) + (der c r2)
+  */
   case BasicRegularExpression.ALT(r1, r2) => BasicRegularExpression.ALT(der(c, r1), der(c, r2))
+
+  /**
+  * der c (r1 . r2) = 
+  */
   case BasicRegularExpression.SEQ(r1, r2) => 
     if (nullable(r1)) BasicRegularExpression.ALT(BasicRegularExpression.SEQ(der(c, r1), r2), der(c, r2))
     else BasicRegularExpression.SEQ(der(c, r1), r2)
-  case BasicRegularExpression.STAR(r1) => BasicRegularExpression.SEQ(der(c, r1), BasicRegularExpression.STAR(r1))
+
+  /**
+  * der c (r*) = (der c r) . r*
+  */
+  case BasicRegularExpression.STAR(r) => BasicRegularExpression.SEQ(der(c, r), BasicRegularExpression.STAR(r))
 }
 
 /** 
