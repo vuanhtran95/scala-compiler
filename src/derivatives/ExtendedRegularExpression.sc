@@ -19,7 +19,11 @@ case class PLUS(r: Base.Rexp) extends Base.Rexp                      // plus
 case class OPTIONAL(r: Base.Rexp) extends Base.Rexp                  // optional
 
 
-case class INTER(r1: Base.Rexp, r2: Base.Rexp) extends Base.Rexp          // intersection &
+/**
+* Intersection (matched by both r1 and r1)
+* r1 & r2
+*/
+case class INTER(r1: Base.Rexp, r2: Base.Rexp) extends Base.Rexp          // intersection
 
 /**
 * n-times
