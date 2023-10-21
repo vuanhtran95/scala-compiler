@@ -1,5 +1,6 @@
 import $file.Base
 import $file.BasicRegularExpression
+import $file.ExtendedRegularExpression
 
 /** 
 * Simplification
@@ -10,6 +11,7 @@ def simp(r: Base.Rexp) : Base.Rexp = r match {
     case (r1s, BasicRegularExpression.ZERO) => r1s
     case (r1s, r2s) => if (r1s == r2s) r1s else BasicRegularExpression.ALT (r1s, r2s)
   }
+
   case BasicRegularExpression.SEQ(r1, r2) =>  (simp(r1), simp(r2)) match {
     case (BasicRegularExpression.ZERO, _) => BasicRegularExpression.ZERO
     case (_, BasicRegularExpression.ZERO) => BasicRegularExpression.ZERO
@@ -55,6 +57,54 @@ def der(c: Char, r: Base.Rexp) : Base.Rexp = r match {
   * der c (r*) = (der c r) . r*
   */
   case BasicRegularExpression.STAR(r) => BasicRegularExpression.SEQ(der(c, r), BasicRegularExpression.STAR(r))
+
+  /**
+  * N times
+  * der c (r{n}) =
+  * IF (n == 0) THEN 0
+  * ELSE (der c r) . r{n-1}
+  */
+  case ExtendedRegularExpression.NTIMES(r, n) => 
+    if (n == 0) BasicRegularExpression.ZERO
+    else BasicRegularExpression.SEQ(der(c, r), ExtendedRegularExpression.NTIMES(r, n - 1))
+
+  /**
+  * Plus: 1 or more
+  * der c (r+) = (der c r) . r*
+  */
+  case ExtendedRegularExpression.PLUS(r) => 
+    BasicRegularExpression.SEQ(der(c, r), BasicRegularExpression.STAR(r))
+
+  /**
+  * Between
+  * der c ( r{n, m} ) = 
+  * IF (n == 0 && m == 0) THEN 0
+  * ELSE (n == 0) ??? not sure
+  *
+  * TODO
+  */
+  case ExtendedRegularExpression.BETWEEN(r) => ExtendedRegularExpression.BETWEEN(r)
+
+  /**
+  * Range [c1, c2, ... cn]
+  * der c ([c1, c2, ... cn]) = 
+  * IF (c in [c1, c2, ... cn]) THEN 1
+  * ELSE 0
+  */
+  case ExtendedRegularExpression.RANGE(cs: Set[Char]) => 
+    if (cs.contains(r)) BasicRegularExpression.ONE 
+    else BasicRegularExpression.ZERO;
+
+  /**
+  *
+  */
+  case ExtendedRegularExpression.OPTIONAL(r) => ExtendedRegularExpression.OPTIONAL(r)
+  case ExtendedRegularExpression.UPTO(r) => ExtendedRegularExpression.UPTO(r)
+  case ExtendedRegularExpression.FROM(r) => ExtendedRegularExpression.FROM(r)
+  case ExtendedRegularExpression.NOT(r) => ExtendedRegularExpression.NOT(r)
+
+  // case ExtendedRegularExpression.CFUN(r) => ExtendedRegularExpression.CFUN(r)
+
 }
 
 /** 
