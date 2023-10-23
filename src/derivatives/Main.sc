@@ -3,10 +3,6 @@ import $file.BasicRegularExpression
 import $file.ExtendedRegularExpression
 import $file.Function
 
-/*
-case class CFUN(f: Char => Boolean) extends Rexp         // subsuming CHAR and RANGE
-*/
-
 
 // Test Cases
 //============
